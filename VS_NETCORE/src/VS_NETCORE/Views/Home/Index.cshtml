@@ -1,113 +1,25 @@
-﻿@model VS_NETCORE.Models.Curation.IndexViewModel
+﻿@model VS_NETCORE.Models.Curation.ViewModel
 
-@section styles {
-    <style>
-        #loader-bg {
-            display: none;
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0px;
-            left: 0px;
-            background: #000;
-            z-index: 1;
-        }
-
-        #loader {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            width: 200px;
-            height: 200px;
-            margin-top: -100px;
-            margin-left: -100px;
-            text-align: center;
-            color: #fff;
-            z-index: 2;
-        }
-    </style>
-}
-
-<div id="loader-bg">
-    <div id="loader">
-        <img src="~/images/img-loading.gif" width="80" height="80" alt="Now Loading..." />
-        <p>Now Loading...</p>
-    </div>
+<div class="row" style="margin-bottom: 20px;">
 </div>
-<div id="wrap" class="table-responsive">
-    <h1>@Model.Header</h1>
-    <table id="availabilities" class="table table-condensed table-striped">
-        <thead>
-            <tr>
-                <th>申込対象サービス</th>
-                <th>空日一覧</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-</div>
-
-@section scripts {
-    <script>
-        var url = "/api/service_groups";
-        $.ajax({
-            url: url,
-            success: function(urls) {
-                var $table = $("#availabilities");
-                for (var i = 0; i < urls.length; i++) {
-                    var url = "/api/service_apply?url=" + urls[i];
-                    $.ajax({
-                        url: url,
-                        success: function(availabilities) {
-                            for (var j = 0; j < availabilities.length; j++) {
-                                var availability = availabilities[j];
-                                var $tr = $("<tr>");
-                                var $td1 = $("<td>");
-                                var $td2 = $("<td>");
-                                var $a = $("<a>");
-                                $a.attr("href", availability.url);
-                                $a.attr("target", "_blank");
-                                $a.text(availability.title);
-                                $td1.append($a);
-                                $tr.append($td1);
-                                $innerUl = $("<ul>");
-                                for (var k = 0; k < availability.dates.length; k++) {
-                                    var date = availability.dates[k];
-                                    var $innerli = $("<li>");
-                                    var $innerspan = $("<span>");
-                                    if (date.className) {
-                                        $innerspan.attr("class", date.className);
-                                    }
-                                    $innerspan.text(date.text);
-                                    $innerli.append($innerspan);
-                                    $innerUl.append($innerli);
-                                }
-                                $td2.append($innerUl);
-                                $tr.append($td2);
-                                $table.append($tr);
-                            }
+    <div class="row" >
+        @foreach (var title in Model.CurationViewModel)
+        {
+            <div class="col-lg-4">
+                <div class="bs-component">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">@title.HPTitle</h3>
+                        </div>
+                        @foreach (var m in title.CurationTitleViewModel)
+                        {
+                            <div class="panel-body">
+                                <a href="@m.Link">@m.Title</a>
+                            </div>
                         }
-                    });
-                }
-                stopload();
-            },
-            error: function() {
-                alrt("読み込みに失敗しました。リロードしてください。");
-                location.reload();
-            }
-        });
+                    </div>
+                </div>
+            </div>
 
-    $(function() {
-        var h = $(window).height();
-        $('#wrap').css('display','none');
-        $('#loader-bg ,#loader').height(h).css('display','block');
-    });
-
-    function stopload(){
-        $('#wrap').css('display','block');
-        $('#loader-bg').delay(900).fadeOut(800);
-        $('#loader').delay(600).fadeOut(300);
-    }
-    </script>
-}
+        }
+    </div>

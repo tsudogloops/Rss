@@ -204,9 +204,5 @@
 --resource:"C:\Users\t.sudo\Documents\Source\Rss\VS_NETCORE\src\VS_NETCORE\obj\Debug\netcoreapp1.0\VS_NETCOREdotnet-compile.deps.json",VS_NETCORE.deps.json
 C:\Users\t.sudo\Documents\Source\Rss\VS_NETCORE\src\VS_NETCORE\Program.cs
 C:\Users\t.sudo\Documents\Source\Rss\VS_NETCORE\src\VS_NETCORE\Startup.cs
-C:\Users\t.sudo\Documents\Source\Rss\VS_NETCORE\src\VS_NETCORE\Controllers\CurationController.cs
 C:\Users\t.sudo\Documents\Source\Rss\VS_NETCORE\src\VS_NETCORE\Controllers\HomeController.cs
-C:\Users\t.sudo\Documents\Source\Rss\VS_NETCORE\src\VS_NETCORE\Models\Availability.cs
-C:\Users\t.sudo\Documents\Source\Rss\VS_NETCORE\src\VS_NETCORE\Models\AvailabilityDateTime.cs
-C:\Users\t.sudo\Documents\Source\Rss\VS_NETCORE\src\VS_NETCORE\Models\Curation\IndexViewModel.cs
-C:\Users\t.sudo\Documents\Source\Rss\VS_NETCORE\src\VS_NETCORE\Models\Curation\TestViewModel.cs
+C:\Users\t.sudo\Documents\Source\Rss\VS_NETCORE\src\VS_NETCORE\Models\Curation\ViewModel.cs
