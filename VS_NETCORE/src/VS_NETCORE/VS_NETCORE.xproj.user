@@ -3,5 +3,6 @@
   <PropertyGroup>
     <ActiveDebugProfile>IIS Express</ActiveDebugProfile>
     <ShowAllFiles>false</ShowAllFiles>
+    <NameOfLastUsedPublishProfile>furusato - Web Deploy</NameOfLastUsedPublishProfile>
   </PropertyGroup>
 </Project>

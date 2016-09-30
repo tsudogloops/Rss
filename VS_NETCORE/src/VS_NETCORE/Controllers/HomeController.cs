@@ -15,27 +15,37 @@ namespace VS_NETCORE.Controllers
         public async Task<IActionResult> Index()
         {
             var curationTitleList = new List<CurationViewModel>();
+            //curationTitleList.Add(new CurationViewModel
+            //{
+            //    HPTitle = "RETRIP",
+            //    RssURL = "https://retrip.jp/feeds/",
+            //    CurationTitleViewModel = await GetCurationTitleViewModel("RETRIP", "https://retrip.jp/feeds/")
+            //});
+
+
+            //curationTitleList.Add(new CurationViewModel
+            //{
+            //    HPTitle = "SocialGame",
+            //    RssURL = "http://gamebiz.jp/?feed=rss",
+            //    CurationTitleViewModel = await GetCurationTitleViewModel("SocialGame", "http://gamebiz.jp/?feed=rss")
+            //});
+
+            //curationTitleList.Add(new CurationViewModel
+            //{
+            //    HPTitle = "痛いニュース(ﾉ∀`)",
+            //    RssURL = "http://rssblog.ameba.jp/maokobayashi0721/rss20.xml",
+            //    CurationTitleViewModel = await GetCurationTitleViewModel("痛いニュース(ﾉ∀`)", "http://rssblog.ameba.jp/maokobayashi0721/rss20.xml")
+            //});
+
             curationTitleList.Add(new CurationViewModel
             {
-                HPTitle = "RETRIP",
-                RssURL = "https://retrip.jp/feeds/",
-                CurationTitleViewModel = await GetCurationTitleViewModel("RETRIP", "https://retrip.jp/feeds/")
+                HPTitle = "ふるさとチョイス",
+                RssURL = "http://www.furusato-tax.jp/notification-list.html",
+                CurationTitleViewModel = await GetCurationFurusatoTitleViewModel("ふるさとチョイス", "http://www.furusato-tax.jp/notification-list.html")
             });
 
 
-            curationTitleList.Add(new CurationViewModel
-            {
-                HPTitle = "SocialGame",
-                RssURL = "http://gamebiz.jp/?feed=rss",
-                CurationTitleViewModel = await GetCurationTitleViewModel("SocialGame", "http://gamebiz.jp/?feed=rss")
-            });
 
-            curationTitleList.Add(new CurationViewModel
-            {
-                HPTitle = "痛いニュース(ﾉ∀`)",
-                RssURL = "http://rssblog.ameba.jp/maokobayashi0721/rss20.xml",
-                CurationTitleViewModel = await GetCurationTitleViewModel("痛いニュース(ﾉ∀`)", "http://rssblog.ameba.jp/maokobayashi0721/rss20.xml")
-            });
 
             return View(new ViewModel
             {
@@ -50,6 +60,8 @@ namespace VS_NETCORE.Controllers
 
             var serviceCategoryDoaaaa =
                 serviceCategoryDom.DocumentElement.SelectNodes("//item");
+            var serviceCategoryentry =
+                serviceCategoryDom.DocumentElement.SelectNodes("//entry");
 
             var titleList = serviceCategoryDom.DocumentElement.SelectNodes("//title");
             var linkList = serviceCategoryDom.DocumentElement.SelectNodes("//link");
@@ -68,6 +80,44 @@ namespace VS_NETCORE.Controllers
             }
             return data.ToArray();
         }
+
+        private async Task<CurationTitleViewModel[]> GetCurationFurusatoTitleViewModel(string title, string rssURL)
+        {
+            var TestUrl = new Uri(rssURL);
+            var serviceCategoryDom = await GetHtmlAsync(TestUrl);
+
+            HtmlAgilityPack.HtmlNode contents = serviceCategoryDom.DocumentNode.SelectSingleNode("//div[@class='newbox_spmargin']");
+            Console.WriteLine(contents.InnerHtml);
+            var li = contents.SelectNodes("//li[@class='clearfix']");
+            var clearfixsh4 = li.SelectMany(x => x.Descendants("h4"));
+            var clearfixsh4linkdetail = clearfixsh4.SelectMany(x => x.Descendants("a")).Select(x => x.Attributes["href"].Value.Contains("detail") ? x : null);
+            var data = new List<CurationTitleViewModel>();
+            foreach (var h4data in clearfixsh4linkdetail.Where(x => x != null))
+            {
+                var rss = new CurationTitleViewModel
+                {
+                    Title = h4data.InnerText,
+                    Link  = h4data.Attributes["href"].Value
+                };
+                data.Add(rss);
+            }
+
+
+            //for (var x = 1; x <= serviceCategoryDoaaaa.Count; x++)
+            //{
+            //    if (titleList[x].InnerText.Contains(title))
+            //        continue;
+
+            //    var rss = new CurationTitleViewModel
+            //    {
+            //        Title = ShrotText(titleList[x].InnerText),
+            //        Link = linkList[x].InnerText
+            //    };
+            //    data.Add(rss);
+            //}
+            return data.ToArray();
+        }
+
 
 
         private async Task<HtmlDocument> GetHtmlAsync(Uri url)
