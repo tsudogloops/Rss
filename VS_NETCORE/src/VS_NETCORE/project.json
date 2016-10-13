@@ -28,8 +28,8 @@
     "FSharp.Core": "4.0.0.1",
     "system.xml.xpath.xmldocument": "4.0.0",
     "HtmlAgilityPack.NetCore": "1.5.0.1",
-    "System.ServiceModel.Web": "1.0.0"
-  },
+    "System.ServiceModel.Web": "1.0.0",
+    "Microsoft.AspNetCore.WebUtilities": "1.0.0" },
 
   "tools": {
     "BundlerMinifier.Core": "2.0.238",

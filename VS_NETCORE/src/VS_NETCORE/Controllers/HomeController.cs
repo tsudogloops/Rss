@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml;
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Mvc;
 using VS_NETCORE.Models.Curation;
+using MediaTypeHeaderValue = System.Net.Http.Headers.MediaTypeHeaderValue;
 
 namespace VS_NETCORE.Controllers
 {
@@ -44,6 +46,13 @@ namespace VS_NETCORE.Controllers
                 CurationTitleViewModel = await GetCurationFurusatoTitleViewModel("ふるさとチョイス", "http://www.furusato-tax.jp/notification-list.html")
             });
 
+            curationTitleList.Add(new CurationViewModel
+            {
+                HPTitle = "さとふる",
+                RssURL = "https://www.satofull.jp/products/list.php?&sort=number3,number8,Number19,number6&cnt=30&p=1",
+                CurationTitleViewModel = await GetCurationSatofuruTitleViewModel("さとふる", "https://www.satofull.jp/products/list.php?&sort=number3,number8,Number19,number6&cnt=30&p=1")
+            });
+
 
 
 
@@ -51,6 +60,42 @@ namespace VS_NETCORE.Controllers
             {
                 CurationViewModel = curationTitleList.ToArray()
             });
+        }
+
+        [HttpGet, Route("api/events")]
+        public async Task<IActionResult> SendMessageRequest(string message, string color, bool notify)
+        { 
+            try
+            {
+                if (message.Length > 15)
+                {
+                    message = message.Substring(0, 15);
+                }
+
+                var andMore = "(and more...)";
+                if (message.Length + andMore.Length > 5000)
+                {
+                    message = (message + andMore).Substring(0, 5000);
+                }
+
+                var url = $"https://api.hipchat.com/v2/room/3206474/notification?auth_token=8MxdsvAp2dsPfpEHP7ObrzOsEUoCTopwD8FZdnfh";
+
+                HttpClient httpClient = new HttpClient();
+                var query_string = $"notify={(notify ? '1' : '0')}&" +
+                              $"message={WebUtility.UrlEncode(message)}&" +
+                              $"color={color}&" +
+                              $"message_format={"text"}";
+                HttpContent contentTest = new StringContent(query_string);
+                contentTest.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
+                var responsetest = await httpClient.PostAsync(url, contentTest);
+                String text = await responsetest.Content.ReadAsStringAsync();
+
+            }
+            catch (Exception e)
+            {
+
+            }
+            return Json("OK");
         }
 
         private async Task<CurationTitleViewModel[]> GetCurationTitleViewModel(string title, string rssURL)
@@ -88,8 +133,11 @@ namespace VS_NETCORE.Controllers
 
             HtmlAgilityPack.HtmlNode contents = serviceCategoryDom.DocumentNode.SelectSingleNode("//div[@class='newbox_spmargin']");
             Console.WriteLine(contents.InnerHtml);
+
             var li = contents.SelectNodes("//li[@class='clearfix']");
-            var clearfixsh4 = li.SelectMany(x => x.Descendants("h4"));
+            var clearfixshPrefectureSpWrapper = contents.SelectNodes("//div[@class='prefectureSpWrapper']");
+            var clearfixsh4 = clearfixshPrefectureSpWrapper.SelectMany(x => x.Descendants("h4"));
+
             var clearfixsh4linkdetail = clearfixsh4.SelectMany(x => x.Descendants("a")).Select(x => x.Attributes["href"].Value.Contains("detail") ? x : null);
             var data = new List<CurationTitleViewModel>();
             foreach (var h4data in clearfixsh4linkdetail.Where(x => x != null))
@@ -102,23 +150,31 @@ namespace VS_NETCORE.Controllers
                 data.Add(rss);
             }
 
-
-            //for (var x = 1; x <= serviceCategoryDoaaaa.Count; x++)
-            //{
-            //    if (titleList[x].InnerText.Contains(title))
-            //        continue;
-
-            //    var rss = new CurationTitleViewModel
-            //    {
-            //        Title = ShrotText(titleList[x].InnerText),
-            //        Link = linkList[x].InnerText
-            //    };
-            //    data.Add(rss);
-            //}
             return data.ToArray();
         }
 
+        private async Task<CurationTitleViewModel[]> GetCurationSatofuruTitleViewModel(string title, string rssURL)
+        {
+            var TestUrl = new Uri(rssURL);
+            var serviceCategoryDom = await GetHtmlAsync(TestUrl);
 
+            HtmlAgilityPack.HtmlNode contents = serviceCategoryDom.DocumentNode.SelectSingleNode("//div[@class='articleborder']");
+            Console.WriteLine(contents.InnerHtml);
+            var li = contents.SelectNodes("//li[@class='pitem']");
+            var clearfixsh4 = li.SelectMany(x => x.Descendants("a"));
+            var clearfixsh4linkdetail = clearfixsh4.Select(x => x.Attributes["href"].Value.Contains("detail") ? x : null);
+            var data = new List<CurationTitleViewModel>();
+            foreach (var h4data in clearfixsh4linkdetail.Where(x => !x.InnerHtml.Contains("valuation clearfix")))
+            {
+                var rss = new CurationTitleViewModel
+                {
+                    Title =  h4data.InnerText,
+                    Link = "https://www.satofull.jp" + h4data.Attributes["href"].Value
+            };
+                data.Add(rss);
+            }
+            return data.ToArray();
+        }
 
         private async Task<HtmlDocument> GetHtmlAsync(Uri url)
         {
