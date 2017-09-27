@@ -1,0 +1,11 @@
+C:\Work\Rss\VS_NETCORE\src\VS_NETCORE\bin\Debug\netcoreapp1.0\VS_NETCORE.deps.json
+C:\Work\Rss\VS_NETCORE\src\VS_NETCORE\bin\Debug\netcoreapp1.0\VS_NETCORE.runtimeconfig.json
+C:\Work\Rss\VS_NETCORE\src\VS_NETCORE\bin\Debug\netcoreapp1.0\VS_NETCORE.runtimeconfig.dev.json
+C:\Work\Rss\VS_NETCORE\src\VS_NETCORE\bin\Debug\netcoreapp1.0\VS_NETCORE.dll
+C:\Work\Rss\VS_NETCORE\src\VS_NETCORE\bin\Debug\netcoreapp1.0\VS_NETCORE.pdb
+C:\Work\Rss\VS_NETCORE\src\VS_NETCORE\obj\Debug\netcoreapp1.0\VS_NETCORE.csprojResolveAssemblyReference.cache
+C:\Work\Rss\VS_NETCORE\src\VS_NETCORE\obj\Debug\netcoreapp1.0\VS_NETCORE.csproj.CoreCompileInputs.cache
+C:\Work\Rss\VS_NETCORE\src\VS_NETCORE\obj\Debug\netcoreapp1.0\VS_NETCORE.AssemblyInfoInputs.cache
+C:\Work\Rss\VS_NETCORE\src\VS_NETCORE\obj\Debug\netcoreapp1.0\VS_NETCORE.AssemblyInfo.cs
+C:\Work\Rss\VS_NETCORE\src\VS_NETCORE\obj\Debug\netcoreapp1.0\VS_NETCORE.dll
+C:\Work\Rss\VS_NETCORE\src\VS_NETCORE\obj\Debug\netcoreapp1.0\VS_NETCORE.pdb
